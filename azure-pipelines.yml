@@ -25,9 +25,7 @@ stages:
          echo  '$(System.DefaultWorkingDirectory)'
          ls $(System.DefaultWorkingDirectory)
          cd docker-mendix-buildpack-3.5.2 ;
-         #BUILD_PATH:$(pwd)
-         #echo $BUILD_PATH
-          sudo docker build --build-arg  BUILD_PATH=$(System.DefaultWorkingDirectory) .
+         sudo docker build --build-arg BUILD_PATH=$(System.DefaultWorkingDirectory) . ;
         #  echo docker build --build-arg  BUILD_PATH=$(BUILD_PATH)-t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
         #  sudo docker login $REGISTRY_URL --username=$REGISTRY_USER --password=$REGISTRY_PASSWORD;
         #  sudo docker push $REGISTRY_URL/$IMAGE_NAME:$TAG;
