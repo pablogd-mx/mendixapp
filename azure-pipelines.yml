@@ -23,8 +23,9 @@ stages:
          wget -O buildpack.zip $(DOCKER_BUILDPACK_URL);
          unzip buildpack.zip;
          cd docker-mendix-buildpack-3.5.2 ;
-         ls -ltr;
-         sudo docker build --build-arg  BUILD_PATH=. -t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
+         BUILD_PATH=$(pwd)
+         sudo docker build --build-arg  BUILD_PATH=$(BUILD_PATH)-t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
+         echo docker build --build-arg  BUILD_PATH=$(BUILD_PATH)-t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
          sudo docker login $REGISTRY_URL --username=$REGISTRY_USER --password=$REGISTRY_PASSWORD;
          sudo docker push $REGISTRY_URL/$IMAGE_NAME:$TAG;
         #  IMAGE_TAG= $()
