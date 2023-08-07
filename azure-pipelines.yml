@@ -18,6 +18,7 @@ stages:
     - job: build
       steps:
       - script: 
+         sudo apt install curl zip unzip tar bzip2 -y
          wget -O buildpack.zip $(DOCKER_BUILDPACK_URL)
          unzip buildpack.zip
          mv docker-mendix-buildpack*/* .
