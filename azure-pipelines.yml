@@ -3,8 +3,9 @@ trigger:
 variables:
   APPNAME: ado-dockerbuildpack
   DOCKER_TLS_CERTDIR: ""
+  TAG: latest
   DOCKER_HOST: tcp://docker:2375
-  IMAGE_NAME: ""
+  IMAGE_NAME: ado
   NAMESPACE: ""
   DOMAINNAME: ""
   DOCKER_BUILDPACK_URL: https://github.com/mendix/docker-mendix-buildpack/archive/refs/tags/v3.5.2.zip
@@ -23,9 +24,9 @@ stages:
          unzip buildpack.zip;
          mv docker-mendix-buildpack*/* . ;
          ls -ltr;
-         sudo docker build --build-arg  BUILD_PATH=. -t $(REGISTRY_URL)/$(IMAGE_NAME):$(IMAGE_TAG) . ;
+         sudo docker build --build-arg  BUILD_PATH=. -t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
          sudo docker login $REGISTRY_URL --username=$REGISTRY_USER --password=$REGISTRY_PASSWORD;
-         sudo docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG;
+         sudo docker push $REGISTRY_URL/$IMAGE_NAME:$TAG;
         #  IMAGE_TAG= $()
 
     #   - task: CopyFiles@2
