@@ -22,7 +22,7 @@ stages:
          sudo apt install curl zip unzip tar bzip2 -y; 
          wget -O buildpack.zip $(DOCKER_BUILDPACK_URL);
          unzip buildpack.zip;
-         sudo mv docker-mendixix-buildpack*/* . ;
+         sudo mv docker-mendix-buildpack*/* . ;
          sudo docker ps -a
          echo sudo docker build --build-arg BUILD_PATH=$(System.DefaultWorkingDirectory) . ;
         #  echo docker build --build-arg  BUILD_PATH=$(BUILD_PATH)-t $(REGISTRY_URL)/$(IMAGE_NAME):$(TAG) ;
