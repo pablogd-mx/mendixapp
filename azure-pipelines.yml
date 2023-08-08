@@ -31,12 +31,13 @@ stages:
      
     - job: deployonK8s
       dependsOn: build
-      steps: 
-      - sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml
-      - sed -i "s{{DB_ENDPOINT}}$(DB_ENDPOINT)/g" deployment.yaml
-      - sed -i "s/{{APP_NAME}}/$(APP_NAME)/g" deployment.yaml
-      - sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}/g" deployment.yaml
-      - sed -i "s/{{DOMAINNAME}}/${DOMAINNAME}/g" deployment.yaml
+      steps:
+      - script: 
+         sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml
+         sed -i "s{{DB_ENDPOINT}}$(DB_ENDPOINT)/g" deployment.yaml
+         sed -i "s/{{APP_NAME}}/$(APP_NAME)/g" deployment.yaml
+         sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}/g" deployment.yaml
+         sed -i "s/{{DOMAINNAME}}/${DOMAINNAME}/g" deployment.yaml
 
     #       cat deploy.yaml
     #   - task: Kubernetes@1
