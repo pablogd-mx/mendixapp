@@ -42,11 +42,7 @@ stages:
          sed -i "s/{{APPNAME}}/$(APPNAME)/g" deployment.yaml;
          sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}\/${IMAGE_NAME}:${IMAGE_TAG}/g" deployment.yaml;
-
-         ls -ltr;
-         cat deployment.yaml 
-         sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}/g" deployment.yaml;
-
+         cat deployment.yaml;
     #       cat deploy.yaml 
     #   - task: Kubernetes@1
     #     inputs:
