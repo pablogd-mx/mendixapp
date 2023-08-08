@@ -45,6 +45,8 @@ stages:
           containerRegistryType: 'Container Registry'
           dockerRegistryEndpoint: 'quay-docker-registry'
           secretName: 'mendix-registry-secret'
+          outputFormat: 'none'
+
       - script: 
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
          sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
@@ -52,7 +54,7 @@ stages:
          sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}\/${IMAGE_NAME}:$(TAG)/g" deployment.yaml;
          cat deployment.yaml;
-    #       cat deploy.yaml 
+  
     #   - task: Kubernetes@1
     #     inputs:
     #       connectionType: 'Kubernetes Service Connection'
