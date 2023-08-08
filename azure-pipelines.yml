@@ -37,29 +37,14 @@ stages:
         inputs: 
           kubectlVersion: latest
       - task: Kubernetes@1
-        displayName: Creating Secret for Registry Push/Pull
         inputs:
           connectionType: 'Kubernetes Service Connection'
           kubernetesServiceEndpoint: 'aks-cluster'
-          namespace: 'mendixapp'
           command: 'create'
           secretType: 'dockerRegistry'
           containerRegistryType: 'Container Registry'
+          dockerRegistryEndpoint: 'quay-docker-registry'
           secretName: 'mendix-registry-secret'
-          forceUpdate: false
-          secretArguments: --from-literal=$(REGISTRY_USER)=$(REGISTRY_PASSWORD)
-
-      #Creating the Kubernetes secrets
-      # - task: Kubernetes@1
-      #   displayName: Creating Secret for Registry Push/Pull
-      #   inputs:
-      #     connectionType: 'Kubernetes Service Connection'
-      #     kubernetesCluster: $(kubernetesCluster)
-      #     command: apply
-      #     #arguments: -f mendix-registry-secret
-      #     secretType: docker-registry
-      #     secretArguments: --from-literal=contoso=$(contosovalue)
-      #     secretName: mendix-registry-secret
       - script: 
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
          sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
