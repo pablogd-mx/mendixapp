@@ -36,6 +36,18 @@ stages:
         displayName: Kubectl installer
         inputs: 
           kubectlVersion: latest
+      - task: Kubernetes@1
+        displayName: Creating Secret for Registry Push/Pull
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceEndpoint: 'aks-cluster'
+          namespace: 'mendixapp'
+          command: 'create'
+          secretType: 'dockerRegistry'
+          containerRegistryType: 'Container Registry'
+          secretName: 'mendix-registry-secret'
+          forceUpdate: false
+          secretArguments: --from-literal=$(REGISTRY_USER)=$(REGISTRY_PASSWORD)
 
       #Creating the Kubernetes secrets
       # - task: Kubernetes@1
