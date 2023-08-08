@@ -28,76 +28,15 @@ stages:
           sudo docker push $(REGISTRY_URL)/$IMAGE_NAME:$TAG;
 
 
-    #   - task: CopyFiles@2
-    #     inputs:
-    #       Contents: '$(Build.Repository.LocalPath)/out.mda' 
-    #       TargetFolder: '$(Build.ArtifactStagingDirectory)/out.mda'      
-    #   - task: CopyFiles@2
-    #     inputs:
-    #       Contents: '$(Build.Repository.LocalPath)/version' 
-    #       TargetFolder: '$(Build.ArtifactStagingDirectory)/version'
-    #   - task: PublishBuildArtifacts@1     
-    #     inputs:
-    #       PathtoPublish: '$(Build.ArtifactStagingDirectory)/out.mda'
-    #       ArtifactName: 'mda'
-
-    #   - task: PublishBuildArtifacts@1     
-    #     inputs:
-    #       PathtoPublish: '$(Build.ArtifactStagingDirectory)/version'
-    #       ArtifactName: 'version'
-       
-    # - job: uploadmda
-    #   dependsOn: buildmda
-    #   steps:
- 
-    #   - task: DownloadBuildArtifacts@1
-    #     inputs:
-    #       downloadType: 'single'
-    #       artifactName: 'mda'
-    #       downloadPath: '$(System.ArtifactsDirectory)'  
- 
-    #   - script: | 
-       
-    #       # META_FILE_NAME=${app_name}-${revision}.json -->TODO
-    #       S3_ENDPOINT= "http://20.229.42.74:9000"
-    #       # S3_BUCKET_NAME= "jenkinsmda"
-    #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    #       unzip awscliv2.zip
-    #       sudo ./aws/install;aws --version
-    #       ls -ltr
-    #       pwd
-    #       #ls -l out.mda deployment/model/metadata.json
-    #       aws configure set aws_access_key_id $(AWS_ACCESS_KEY_ID)
-    #       aws configure set aws_secret_access_key $(AWS_SECRET_ACCESS_KEY)
-    #       aws configure list 
-    #       aws s3 cp --endpoint $(S3_ENDPOINT) --no-verify-ssl $(System.ArtifactsDirectory)/mda/out.mda s3://jenkinsmda/out.mda
-    #      # aws s3 cp --endpoint $(S3_ENDPOINT) --no-verify-ssl deployment/model/metadata.json s3://$(S3_BUCKET_NAME)/$(META_FILE_NAME) --> TODO
-
-    # - job: deployonK8s
-    #   dependsOn: uploadmda
-    #   steps:
-    #   - task: DownloadBuildArtifacts@1
-    #     inputs:
-    #       downloadType: 'single'
-    #       artifactName: 'version'
-    #       downloadPath: '$(System.ArtifactsDirectory)'
-    #   - task: KubectlInstaller@0
-    #     displayName: Kubectl installer
-    #     inputs: 
-    #       kubectlVersion: latest
-    
-    #   - script: | 
-    #       cat deploy.yaml
-    #       sed -i "s/{{APP_NAME}}/$(APP_NAME)/g" deploy.yaml
-    #       sed -i "s/{{MX_DB_PLAN_NAME}}/$(MX_DB_PLAN_NAME)/g" deploy.yaml
-    #       sed -i "s/{{MX_STORAGE_PLAN_NAME}}/$(MX_ST_PLAN_NAME)/g" deploy.yaml
-    #       #sed -i "s/{{MX_STUDIO_PRO_VERSION}}/$(cat version)/g" deploy.yaml
-    #       #sed -i "s/{{SOURCE_URL}}/$(SOURCE_URL)/g" deploy.yaml
-    #       sed -i "s/{{MX_ADMIN_PASSWORD}}/$(MX_ADMIN_PASSWORD)/g" deploy.yaml
-    #       pwd
-    #       ls -l
-    #       jq -r .Constants[].Name deployment/model/metadata.json > name
-    #       cat name
+     
+    - job: deployonK8s
+      dependsOn: build
+      steps: 
+      - sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml
+      - sed -i "s{{DB_ENDPOINT}}$(DB_ENDPOINT)/g" deployment.yaml
+      - sed -i "s/{{APP_NAME}}/$(APP_NAME)/g" deployment.yaml
+      - sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}/g" deployment.yaml
+      - sed -i "s/{{DOMAINNAME}}/${DOMAINNAME}/g" deployment.yaml
 
     #       cat deploy.yaml
     #   - task: Kubernetes@1
