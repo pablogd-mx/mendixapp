@@ -1,0 +1,105 @@
+# refer to https://docs.mendix.com/developerportal/deploy/run-mendix-on-kubernetes/
+apiVersion: v1
+data:
+  admin-password: {{ADMIN_PASSWORD}}
+  db-endpoint: {{DB_ENDPOINT}}
+  # license-id: {{LICENSE_ID}}
+  # license-key: {{LICENSE_KEY}}
+kind: Secret
+metadata:
+  name: mendix-{{APPNAME}}
+type: Opaque
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mendix-{{APPNAME}}
+  labels:
+    app: mendix-{{APPNAME}}
+spec:
+  serviceName: mendix-{{APPNAME}}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mendix-{{APPNAME}}
+  template:
+    metadata:
+      labels:
+        app: mendix-{{APPNAME}}
+    spec:
+      imagePullSecrets:
+        - name: mendix-registry-secret
+      containers:
+        - name: mendix-app
+          image: {{IMAGE_URL}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env: # config your environment variable here.
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mendix-{{APPNAME}}
+                  key: admin-password
+            - name: DATABASE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: mendix-{{APPNAME}}
+                  key: db-endpoint
+            # - name: LICENSE_ID
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mendix-{{APPNAME}}
+            #       key: license-id
+            # - name: LICENSE_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mendix-{{APPNAME}}
+            #       key: license-key
+            ## config your storage file location. s3 can be used for all compatible provider, like minio, Aliyun OSS, and Tencent COS bucket.
+            ## localfilesystem will be used if no configuration here.
+            ## refer to doc: https://docs.mendix.com/refguide/custom-settings/#general
+            # - name: MXRUNTIME_com_mendix_core_StorageService
+            #   value: com.mendix.storage.s3
+            # - name: MXRUNTIME_com_mendix_storage_s3_AccessKeyId
+            #   value:
+            # - name: MXRUNTIME_com_mendix_storage_s3_SecretAccessKey
+            #   value:
+            # - name: MXRUNTIME_com_mendix_storage_s3_BucketName
+            #   value:
+            # - name: MXRUNTIME_com_mendix_storage_s3_Region
+            #   value:
+            # - name: MXRUNTIME_com_mendix_storage_s3_EndPoint
+            #   value:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mendix-{{APPNAME}}
+  labels:
+    app: mendix-{{APPNAME}}
+spec:
+  ports:
+  - name: mendix-app
+    port: 8080
+    protocol: TCP
+  selector:
+    app: mendix-{{APPNAME}}
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mendix-{{APPNAME}}
+spec:
+  rules:
+  - host: {{APPNAME}}.{{DOMAINNAME}}
+    http:
+      paths:
+      - backend:
+          service:
+            name: mendix-{{APPNAME}}
+            port:
+              name: mendix-app
+        path: /
+        pathType: ImplementationSpecific
