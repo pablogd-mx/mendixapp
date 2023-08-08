@@ -36,16 +36,16 @@ stages:
         displayName: Kubectl installer
         inputs: 
           kubectlVersion: latest
+   
       - task: Kubernetes@1
         inputs:
           connectionType: 'Kubernetes Service Connection'
           kubernetesServiceEndpoint: 'aks-cluster'
+          namespace: 'mendix-app'
           command: 'create'
-          secretType: 'dockerRegistry'
-          containerRegistryType: 'Container Registry'
-          dockerRegistryEndpoint: 'quay-docker-registry'
-          secretName: 'mendix-registry-secret'
-          outputFormat: 'none'
+          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD)'
+                  
+        
 
       - script: 
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
@@ -64,6 +64,9 @@ stages:
     #       useConfigurationFile: true
     #       configuration: 'deploy.yaml'
    
-     
+    #  secretType: 'dockerRegistry'
+    #       containerRegistryType: 'Container Registry'
+    #       dockerRegistryEndpoint: 'quay-docker-registry'
+    #       secretName: 'mendix-registry-secret'
           
         #  kubectl apply -f deploy.yaml -n ${K8S_CLUSTER_NAMESPACE}
