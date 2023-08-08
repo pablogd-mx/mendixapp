@@ -6,8 +6,8 @@ variables:
   TAG: "latest"
   DOCKER_HOST: tcp://docker:2375
   IMAGE_NAME: "ado"
-  NAMESPACE: ""
-  DOMAINNAME: ""
+  #NAMESPACE: ""
+  #DOMAINNAME: ""
   DOCKER_BUILDPACK_URL: https://github.com/mendix/docker-mendix-buildpack/archive/refs/tags/v3.5.2.zip
 
 pool:
@@ -36,6 +36,18 @@ stages:
         displayName: Kubectl installer
         inputs: 
           kubectlVersion: latest
+
+      #Creating the Kubernetes secrets
+      # - task: Kubernetes@1
+      #   displayName: Creating Secret for Registry Push/Pull
+      #   inputs:
+      #     connectionType: 'Kubernetes Service Connection'
+      #     kubernetesCluster: $(kubernetesCluster)
+      #     command: apply
+      #     #arguments: -f mendix-registry-secret
+      #     secretType: docker-registry
+      #     secretArguments: --from-literal=contoso=$(contosovalue)
+      #     secretName: mendix-registry-secret
       - script: 
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
          sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
