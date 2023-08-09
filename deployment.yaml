@@ -1,13 +1,4 @@
 # refer to https://docs.mendix.com/developerportal/deploy/run-mendix-on-kubernetes/
-apiVersion: v1
-data:
-  admin-password: {{ADMIN_PASSWORD}}
-  db-endpoint: {{DB_ENDPOINT}}
-kind: Secret
-metadata:
-  name: mendix-{{APPNAME}}
-type: Opaque
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
