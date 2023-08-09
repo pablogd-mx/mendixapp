@@ -2,6 +2,7 @@ trigger:
 - main
 variables:
   APPNAME: "ado-dockerbuildpack"
+  
   DOCKER_TLS_CERTDIR: ""
   TAG: "latest"
   DOCKER_HOST: tcp://docker:2375
@@ -43,8 +44,7 @@ stages:
           kubernetesServiceEndpoint: 'aks-cluster'
           namespace: 'mendix-app'
           command: 'create'
-          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD)'
-                  
+          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client -o yaml | kubectl apply -f - '
         
 
       - script: 
