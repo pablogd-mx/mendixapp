@@ -46,7 +46,9 @@ stages:
           namespace: 'mendix-app'
           command: 'create'
           arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client -o yaml | kubectl apply -f - '
+          outputFormat: none
 
+# Create Secret for DB endpoint
       - task: Kubernetes@1
         displayName: "Creating Secret for Database Connection"
         inputs:
@@ -55,6 +57,8 @@ stages:
           namespace: 'mendix-app'
           command: 'create'
           arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT) --dry-run=client -o yaml | kubectl apply -f - '
+          outputFormat: none
+     
       - script: 
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
          sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
