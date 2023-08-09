@@ -45,7 +45,7 @@ stages:
           kubernetesServiceEndpoint: 'aks-cluster'
           namespace: 'mendix-app'
           command: 'create'
-          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client -o yaml | kubectl apply -f - '
+          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD)'
           outputFormat: none
 
 # Create Secret for DB endpoint
@@ -56,7 +56,7 @@ stages:
           kubernetesServiceEndpoint: 'aks-cluster'
           namespace: 'mendix-app'
           command: 'create'
-          arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT) --dry-run=client -o yaml | kubectl apply -f - '
+          arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT)'
           outputFormat: none
      
       - script: 
