@@ -61,11 +61,9 @@ stages:
      
       - script: 
          echo $(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG);
-         sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
-         sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
          sed -i "s/{{APPNAME}}/$(APPNAME)/g" deployment.yaml;
-         sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          sed -i "s/{{IMAGE_URL}}/$(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG)/g" deployment.yaml;
+         sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          cat deployment.yaml;
   
       - task: Kubernetes@1
@@ -76,6 +74,7 @@ stages:
           command: 'apply'
           useConfigurationFile: true
           configuration: 'deployment.yaml'
+          outputFormat: none
    
     #  secretType: 'dockerRegistry'
     #       containerRegistryType: 'Container Registry'
