@@ -45,7 +45,7 @@ stages:
           kubernetesServiceEndpoint: 'aks-cluster'
           namespace: 'mendix-app'
           command: 'create'
-          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD)'
+          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client '
           outputFormat: yaml
 
 # Create Secret for DB endpoint
@@ -56,15 +56,16 @@ stages:
           kubernetesServiceEndpoint: 'aks-cluster'
           namespace: 'mendix-app'
           command: 'create'
-          arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT)'
+          arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT) --dry-run=client '
           outputFormat: yaml
      
       - script: 
+         echo $(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG);
          sed -i "s/{{ADMIN_PASSWORD}}/$(ADMIN_PASSWORD)/g" deployment.yaml;
          sed -i "s/{{DB_ENDPOINT}}/$(DB_ENDPOINT)/g" deployment.yaml;
          sed -i "s/{{APPNAME}}/$(APPNAME)/g" deployment.yaml;
          sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
-         sed -i "s/{{IMAGE_URL}}/${REGISTRY_URL}\/${IMAGE_NAME}:$(TAG)/g" deployment.yaml;
+         sed -i "s/{{IMAGE_URL}}/$(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG)/g" deployment.yaml;
          cat deployment.yaml;
   
       - task: Kubernetes@1
