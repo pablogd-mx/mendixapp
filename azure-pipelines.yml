@@ -4,7 +4,7 @@ variables:
   APPNAME: "ado-dockerbuildpack"
   
   DOCKER_TLS_CERTDIR: ""
-  TAG: "latest"
+  TAG: "1.2"
   DOCKER_HOST: tcp://docker:2375
   IMAGE_NAME: "ado"
   #NAMESPACE: ""
