@@ -20,7 +20,7 @@ spec:
         - name: mendix-registry-secret
       containers:
         - name: mendix-app
-          image: quay.io/pablogdz/dockerbuildpack/ado:1.2
+          image: {{IMAGEURL}}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
