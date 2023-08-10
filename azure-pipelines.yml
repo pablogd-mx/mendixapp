@@ -37,14 +37,7 @@ stages:
         displayName: Kubectl installer
         inputs: 
           kubectlVersion: latest
-      - task: Kubernetes@1
-        displayName: "Running Custom K8s Command"
-        inputs:
-          connectionType: 'Kubernetes Service Connection'
-          kubernetesServiceEndpoint: 'aks-cluster'
-          namespace: 'mendix-app'
-      - script: |
-              kubectl get pods -A
+
    
       - task: Kubernetes@1
         displayName: "Creating secret for registry"
