@@ -67,15 +67,15 @@ stages:
          sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          cat deployment.yaml;
   #
-      - task: Kubernetes@1
-        inputs:
-          connectionType: 'Kubernetes Service Connection'
-          kubernetesServiceEndpoint: 'aks-cluster'
-          namespace: 'mendix-app'
-          command: 'apply'
-          useConfigurationFile: true
-          configuration: 'deployment.yaml'
-          outputFormat: none
+      # - task: Kubernetes@1
+      #   inputs:
+      #     connectionType: 'Kubernetes Service Connection'
+      #     kubernetesServiceEndpoint: 'aks-cluster'
+      #     namespace: 'mendix-app'
+      #     command: 'apply'
+      #     useConfigurationFile: true
+      #     configuration: 'deployment.yaml'
+      #     outputFormat: none
    
     #  secretType: 'dockerRegistry'
     #       containerRegistryType: 'Container Registry'
