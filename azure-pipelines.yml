@@ -46,33 +46,34 @@ stages:
       - script: |
               kubectl get pods -A
    
-#       - task: Kubernetes@1
-#         displayName: "Creating secret for registry"
-#         inputs:
-#           connectionType: 'Kubernetes Service Connection'
-#           kubernetesServiceEndpoint: 'aks-cluster'
-#           namespace: 'mendix-app'
-#           command: 'create'
-#           arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client '
-#           outputFormat: yaml
+      - task: Kubernetes@1
+        displayName: "Creating secret for registry"
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceEndpoint: 'aks-cluster'
+          namespace: 'mendix-app'
+          command: 'create'
+          arguments: 'secret docker-registry mendix-registry-secret --docker-server=$(REGISTRY_URL) --docker-username=$(REGISTRY_USER) --docker-password=$(REGISTRY_PASSWORD) --dry-run=client '
+          outputFormat: yaml
 
-# Create Secret for DB endpoint
-#       - task: Kubernetes@1
-#         displayName: "Creating Secret for Database Connection"
-#         inputs:
-#           connectionType: 'Kubernetes Service Connection'
-#           kubernetesServiceEndpoint: 'aks-cluster'
-#           namespace: 'mendix-app'
-#           command: 'create'
-#           arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT) --dry-run=client '
-#           outputFormat: yaml
+#Create Secret for DB endpoint
+      - task: Kubernetes@1
+        displayName: "Creating Secret for Database Connection"
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceEndpoint: 'aks-cluster'
+          namespace: 'mendix-app'
+          command: 'create'
+          arguments: 'secret generic mendix-$(APPNAME) --from-literal=$(ADMIN_USER)=$(DB_ENDPOINT) --dry-run=client' 
+          outputFormat: yaml
 
       - script: 
          echo $(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG);
+         sed -i "s/{{IMAGEURL}}/$(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG)/g" deployment.yaml;
          sed -i "s/{{APPNAME}}/$(APPNAME)/g" deployment.yaml;
          sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
          cat deployment.yaml;
-  #sed -i "s/{{IMAGE_URL}}/$(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG)/g" deployment.yaml;
+  #
       - task: Kubernetes@1
         inputs:
           connectionType: 'Kubernetes Service Connection'
