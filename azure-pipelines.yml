@@ -61,10 +61,10 @@ stages:
           outputFormat: yaml
 
       - script: 
-         echo $(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG);
-         sed -i "s/{{IMAGEURL}}/$(REGISTRY_URL)\/$(IMAGE_NAME):$(TAG)/g" deployment.yaml;
-         sed -i "s/{{APPNAME}}/$(APPNAME)/g" deployment.yaml;
-         sed -i "s/{{DOMAINNAME}}/$(DOMAINNAME)/g" deployment.yaml;
+         echo $REGISTRY_URL\/$IMAGE_NAME:$TAG;
+         sed -i "s%{{IMAGEURL}}%${REGISTRY_URL}/${IMAGE_NAME}:${TAG}%g" deployment.yaml;
+         sed -i "s%{{APPNAME}}$APPNAME/g" deployment.yaml;
+         sed -i "s/{{DOMAINNAME}}/$DOMAINNAME/g" deployment.yaml;
          cat deployment.yaml;
   #
       # - task: Kubernetes@1
